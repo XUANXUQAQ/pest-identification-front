@@ -1,0 +1,470 @@
+<template>
+  <div>
+    <div style="
+    position: relative;
+    left: 60%;
+   ">
+      <el-button
+        style="position: relative; left: -60%"
+        type="success"
+        size="small"
+        icon="el-icon-circle-check-outline"
+        @click="showAddForm"
+      >
+        添加
+      </el-button>
+      <span style="font-size: 20px">
+        根据
+      </span>
+      <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <span style="font-size: 20px">
+        搜索种
+      </span>
+      <el-input v-model="searchValue" placeholder="请输入名称" style="width: 15%"></el-input>
+      <el-button round @click="getData(selectValue)">搜索</el-button>
+    </div>
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="参考图片" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <el-popover placement="right" title="" trigger="hover">
+            <el-image :src="row.image"></el-image>
+            <el-image slot="reference" :src="row.image" :alt="row.image" style="max-height: 50px;max-width: 50px"></el-image>
+          </el-popover>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="代码" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.code }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="名称" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="拉丁学名" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.latin }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="危害植物" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.plant }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="分布区域" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.area }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="属名称" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.genus_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="科名称" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.family_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="目名称" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <span>{{ row.order_name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column :show-overflow-tooltip="true" align="center" label="Actions" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-circle-check-outline"
+            @click="showUpdateForm(row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            type="danger"
+            size="small"
+            icon="el-icon-circle-check-outline"
+            @click="showDeleteForm(row)"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--分页-->
+    <div class="page-bar">
+      <ul>
+        <li v-if="cur>1"><a v-on:click="cur--,pageClick()">上一页</a></li>
+        <li v-if="cur===1"><a class="banclick">上一页</a></li>
+        <li v-for="index in indexs" v-bind:class="{ 'active': cur === index}">
+          <a v-on:click="btnClick(index)">{{ index }}</a>
+        </li>
+        <li v-if="cur!==all"><a v-on:click="cur++,pageClick()">下一页</a></li>
+        <li v-if="cur === all"><a class="banclick">下一页</a></li>
+        <li><a>共<i>{{all}}</i>页</a></li>
+      </ul>
+    </div>
+
+    <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="id" :label-width="formLabelWidth">
+          <el-input v-model="form.id" autocomplete="off" class="form-input" :disabled="isIdDisabled"></el-input>
+        </el-form-item>
+        <el-form-item label="名称" :label-width="formLabelWidth">
+          <el-input v-model="form.name" autocomplete="off" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="拉丁学名" :label-width="formLabelWidth">
+          <el-input v-model="form.latin" autocomplete="off" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="危害植物" :label-width="formLabelWidth">
+          <el-input v-model="form.plant" autocomplete="off" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="分布区域" :label-width="formLabelWidth">
+          <el-input v-model="form.area" autocomplete="off" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="属名称" :label-width="formLabelWidth">
+          <el-select v-model="form.genusId" placeholder="请选择属名称">
+            <el-option
+              v-for="item in allGenus"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科名称" :label-width="formLabelWidth">
+          <el-input v-model="form.familyName" autocomplete="off" :disabled="true" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="目名称" :label-width="formLabelWidth">
+          <el-input v-model="form.orderName" autocomplete="off" :disabled="true" class="form-input"></el-input>
+        </el-form-item>
+        <el-form-item label="图片" :label-width="formLabelWidth" class="form-input">
+          <el-upload
+            action="#"
+            :on-change="handleChange"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="1"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <template #tip>
+              <div class="el-upload__tip">只能上传 jpg/png 文件，且不超过 500kb</div>
+            </template>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="confirmEdit">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      title="提示"
+      :visible="dialogDeleteVisible"
+      width="30%">
+      <span>是否删除</span>
+      <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogDeleteVisible = false">取消</el-button>
+      <el-button type="danger" @click="confirmDelete">确定</el-button>
+    </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Species',
+  data() {
+    return {
+      listLoading: false,
+      list: null, // 所有结果
+      all: 1, // 总页数
+      cur: 1, // 当前页码
+      totalPage: 10, // 当前条数
+      screenWidth: document.body.clientWidth - 250, // 屏幕尺寸
+      searchValue: '', // 搜索框中的值
+      options: [{
+        value: 'id',
+        label: 'ID',
+      },
+      {
+        value: 'name',
+        label: '名称',
+      }],
+      selectValue: '', // 下拉框中选择id还是name
+      dialogFormVisible: false,
+      form: {
+        id: 0,
+        code: '',
+        name: '',
+        latin: '',
+        plant: '',
+        area: '',
+        genusName: '',
+        genusId: '',
+        familyName: '',
+        familyId: 0,
+        orderName: '',
+        orderId: '',
+        image: '',
+      },
+      isIdDisabled: false,
+      formLabelWidth: '120px',
+      dialogTitle: '',
+      dialogDeleteVisible: false,
+      allGenus: null,
+      fileList: [],
+    };
+  },
+  created() {
+    this.getData();
+    this.getAllGenus();
+  },
+  // 钩子函数
+  mounted() {
+    const that = this;
+    window.onresize = () => (() => {
+      window.screenWidth = document.body.clientWidth;
+      that.screenWidth = window.screenWidth - 250;
+    })();
+  },
+  methods: {
+    async getData(selectValue) {
+      this.listLoading = true;
+      let result;
+      if (this.searchValue) {
+        if (selectValue === 'id') {
+          result = await this.$speciesApi.getSpeciesById(this.searchValue);
+        } else if (selectValue === 'name') {
+          result = await this.$speciesApi.getSpeciesByName(this.cur, this.totalPage, this.searchValue);
+        } else {
+          result = await this.$speciesApi.getAllSpecies(this.cur, this.totalPage);
+        }
+      } else {
+        result = await this.$speciesApi.getAllSpecies(this.cur, this.totalPage);
+      }
+      this.all = result.pages;
+      const items = result.data;
+      this.list = items.map((v) => {
+        this.$set(v, 'edit', false);
+        return v;
+      });
+      this.listLoading = false;
+    },
+    autoInsertFamilyAndOrder() {
+      const { genusId } = this.form;
+      this.$familyGenusApi.selectFamilyByGenusId(genusId).then((res) => {
+        res.data.forEach((obj) => {
+          this.form.familyId = obj.family_id;
+          this.form.familyName = obj.family_name;
+          this.$orderFamilyApi.selectOrderByFamilyId(this.form.familyId).then((res2) => {
+            res2.data.forEach((obj2) => {
+              this.form.orderId = obj2.order_id;
+              this.form.orderName = obj2.order_name;
+            });
+          });
+        });
+      });
+    },
+    showAddForm() {
+      this.dialogFormVisible = true;
+      this.dialogTitle = '添加一个种';
+      this.isIdDisabled = false;
+      this.form.id = 0;
+      this.form.code = '';
+      this.form.name = '';
+      this.form.latin = '';
+      this.form.plant = '';
+      this.form.area = '';
+      this.form.genusId = '';
+      this.form.genusName = '';
+      this.form.familyId = 0;
+      this.form.familyName = '';
+      this.form.orderId = 0;
+      this.form.orderName = '';
+    },
+    showUpdateForm(row) {
+      this.dialogFormVisible = true;
+      this.dialogTitle = '正在修改种';
+      this.isIdDisabled = true;
+      this.form.id = row.id;
+      this.form.code = row.code;
+      this.form.name = row.name;
+      this.form.latin = row.latin;
+      this.form.plant = row.plant;
+      this.form.area = row.area;
+      this.form.genusId = row.genus_id;
+      this.form.genusName = row.genus_name;
+      this.form.familyId = row.family_id;
+      this.form.familyName = row.family_name;
+      this.form.orderId = row.order_id;
+      this.form.orderName = row.order_name;
+    },
+    showDeleteForm(row) {
+      this.dialogDeleteVisible = true;
+      this.form.id = row.id;
+    },
+    confirmDelete() {
+      this.dialogDeleteVisible = false;
+      return this.$speciesApi.deleteSpecies(
+        this.form.id,
+      );
+    },
+    confirmEdit() {
+      this.dialogFormVisible = false;
+      if (this.isIdDisabled) {
+        // 更新
+        return this.$speciesApi.updateSpecies(
+          this.form.area, this.form.code, this.form.genusId, this.form.id,
+          this.form.image, this.form.latin, this.form.name, this.form.plant,
+        );
+      }
+      // 添加
+      return this.$speciesApi.insertSpecies(
+        this.form.area, this.form.code, this.form.genusId, this.form.id,
+        this.form.image, this.form.latin, this.form.name, this.form.plant,
+      );
+    },
+    async getAllGenus() {
+      const resp = await this.$genusApi.selectAllGenus(1, 100);
+      this.allGenus = resp.data;
+    },
+    btnClick(data) { // 页码点击事件
+      if (data !== this.cur) {
+        this.cur = data;
+      }
+      // 根据点击页数请求数据
+      this.getData(this.cur * this.totalPage, this.totalPage);
+    },
+    pageClick() {
+      // 根据点击页数请求数据
+      this.getData(this.cur * this.totalPage, this.totalPage);
+    },
+    handleChange(file) {
+      const self = this;
+      const reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function () {
+        self.form.image = this.result;
+      };
+    },
+    handleExceed() {
+      this.$message.warning('最多仅能添加1个文件');
+    },
+    beforeRemove(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+  },
+  computed: {
+    // 分页
+    indexs() {
+      let left = 1;
+      let right = this.all;
+      const ar = [];
+      if (this.all >= 5) {
+        if (this.cur > 3 && this.cur < this.all - 2) {
+          left = this.cur - 2;
+          right = this.cur + 2;
+        } else if (this.cur <= 3) {
+          left = 1;
+          right = 5;
+        } else {
+          right = this.all;
+          left = this.all - 4;
+        }
+      }
+      while (left <= right) {
+        ar.push(left);
+        left += 1;
+      }
+      return ar;
+    },
+    genusIdCompute() {
+      return this.form.genusId;
+    },
+  },
+  watch: {
+    genusIdCompute() {
+      this.autoInsertFamilyAndOrder();
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+/*分页*/
+.page-bar{
+  width: 80%;margin-left: 35%;margin-right: auto;margin-top: 3%;
+}
+ul,li{
+  margin: 0;
+  padding: 0;
+}
+li{
+  list-style: none
+}
+.page-bar li:first-child>a {
+  margin-left: 0
+}
+.page-bar a{
+  border: 1px solid #ddd;
+  text-decoration: none;
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #5D6062;
+  cursor: pointer;
+  margin-right: 20px;
+}
+.page-bar a:hover{
+  background-color: #eee;
+}
+.page-bar a.banclick{
+  cursor:not-allowed;
+}
+.page-bar .active a{
+  color: #fff;
+  cursor: default;
+  background-color: #E96463;
+  border-color: #E96463;
+}
+.page-bar i{
+  font-style:normal;
+  color: #d44950;
+  margin: 0 4px;
+  font-size: 12px;
+}
+
+/* dialog */
+.form-input {
+  width: 80%;
+}
+</style>
