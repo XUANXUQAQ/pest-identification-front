@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-container class="el-body">
-      <el-aside width="200px">
+      <el-aside width="200px" :style="{height: sideBarHeight}">
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -43,17 +43,18 @@
             <span slot="title">种管理</span>
           </el-menu-item>
         </el-menu>
-        <el-tag type="success" class="user">用户：{{ username }}</el-tag>
-        <el-button
-          type="danger"
-          @click="logout"
-          style="
-          position: relative;
-          top: 55%;
-          width: 70%;
-          left: 30px;">
-          登出
-        </el-button>
+        <div style="position: relative; top: 55%">
+          <div class="user">
+            <el-tag type="success" class="user">用户：{{ username }}</el-tag>
+          </div>
+          <div style="height: 10px"></div>
+          <el-button
+            type="danger"
+            @click="logout"
+            style="position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);width: 125px">
+            登出
+          </el-button>
+        </div>
       </el-aside>
       <el-main>
         <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -77,6 +78,7 @@ export default {
       path: '',
       name: '',
       username: networkUtils.username.getUsername(),
+      sideBarHeight: '100vh',
     };
   },
   methods: {
@@ -112,12 +114,11 @@ export default {
 
 .el-aside {
   background-color: #304156;
-  height: 100vh;
   overflow: hidden;
 }
 
 .el-main {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .svg-container {
@@ -130,10 +131,7 @@ export default {
 .user {
   font-size: 18px;
   font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-  position: relative;
-  top: 52%;
-  width: 70%;
-  margin-left: 30px;
-  margin-right: auto;
+  position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);
+  width: 125px;
 }
 </style>

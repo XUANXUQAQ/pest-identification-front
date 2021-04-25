@@ -1,19 +1,15 @@
 <template>
   <div>
-    <div style="
-    position: relative;
-    left: 60%;
-   ">
+    <div style="margin: 10px">
       <el-button
-        style="position: relative; left: -60%"
         type="success"
-        size="small"
         icon="el-icon-circle-check-outline"
         @click="showAddForm"
       >
         添加
       </el-button>
-      <span style="font-size: 20px">
+      <span style="position: fixed; left: 50%">
+        <span style="font-size: 20px">
         根据
       </span>
       <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
@@ -27,8 +23,9 @@
       <span style="font-size: 20px">
         搜索种
       </span>
-      <el-input v-model="searchValue" placeholder="请输入名称" style="width: 15%"></el-input>
+      <el-input v-model="searchValue" placeholder="请输入名称" style="width: 30%"></el-input>
       <el-button round @click="getData(selectValue)">搜索</el-button>
+      </span>
     </div>
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
 
@@ -112,22 +109,24 @@
     </el-table>
     <!--分页-->
     <div class="page-bar">
-      <ul>
-        <li v-if="cur>1"><a v-on:click="cur--,pageClick()">上一页</a></li>
-        <li v-if="cur===1"><a class="banclick">上一页</a></li>
-        <li v-for="index in indexs" v-bind:class="{ 'active': cur === index}">
-          <a v-on:click="btnClick(index)">{{ index }}</a>
-        </li>
-        <li v-if="cur!==all"><a v-on:click="cur++,pageClick()">下一页</a></li>
-        <li v-if="cur === all"><a class="banclick">下一页</a></li>
-        <li><a>共<i>{{all}}</i>页</a></li>
-      </ul>
+      <el-pagination
+        :page-size="totalPage"
+        :page-count="8"
+        :total="totalPage * all"
+        layout="prev, pager, next"
+        :prev-click="pageDown"
+        :next-click="pageUp"
+        @current-change="btnClick">
+      </el-pagination>
     </div>
 
     <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="id" :label-width="formLabelWidth">
-          <el-input v-model="form.id" autocomplete="off" class="form-input" :disabled="isIdDisabled"></el-input>
+          <el-input v-model="form.id" autocomplete="off" class="form-input" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="代码" :label-width="formLabelWidth">
+          <el-input v-model="form.code" autocomplete="off" class="form-input"></el-input>
         </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" autocomplete="off" class="form-input"></el-input>
@@ -159,7 +158,7 @@
         </el-form-item>
         <el-form-item label="图片" :label-width="formLabelWidth" class="form-input">
           <el-upload
-            action="#"
+            action="https://jsonplaceholder.typicode.com/posts/"
             :on-change="handleChange"
             :before-remove="beforeRemove"
             multiple
@@ -234,7 +233,7 @@ export default {
         orderId: '',
         image: '',
       },
-      isIdDisabled: false,
+      isUpdate: false,
       formLabelWidth: '120px',
       dialogTitle: '',
       dialogDeleteVisible: false,
@@ -295,8 +294,8 @@ export default {
     showAddForm() {
       this.dialogFormVisible = true;
       this.dialogTitle = '添加一个种';
-      this.isIdDisabled = false;
-      this.form.id = 0;
+      this.isUpdate = false;
+      this.form.id = '自动添加';
       this.form.code = '';
       this.form.name = '';
       this.form.latin = '';
@@ -312,7 +311,7 @@ export default {
     showUpdateForm(row) {
       this.dialogFormVisible = true;
       this.dialogTitle = '正在修改种';
-      this.isIdDisabled = true;
+      this.isUpdate = true;
       this.form.id = row.id;
       this.form.code = row.code;
       this.form.name = row.name;
@@ -334,22 +333,64 @@ export default {
       this.dialogDeleteVisible = false;
       return this.$speciesApi.deleteSpecies(
         this.form.id,
-      );
+      ).then(() => {
+        this.getData();
+      }).catch((res) => {
+        if (res.code === 50000) {
+          this.$message({
+            showClose: true,
+            message: '服务器错误',
+            type: 'warning',
+          });
+        }
+      });
     },
     confirmEdit() {
       this.dialogFormVisible = false;
-      if (this.isIdDisabled) {
+      if (this.isUpdate) {
         // 更新
         return this.$speciesApi.updateSpecies(
           this.form.area, this.form.code, this.form.genusId, this.form.id,
           this.form.image, this.form.latin, this.form.name, this.form.plant,
-        );
+        ).then(() => {
+          this.getData();
+        }).catch((res) => {
+          if (res.code === 40000) {
+            this.$message({
+              showClose: true,
+              message: '该种仍然在被使用',
+              type: 'error',
+            });
+          } else if (res.code === 50000) {
+            this.$message({
+              showClose: true,
+              message: '服务器错误',
+              type: 'warning',
+            });
+          }
+        });
       }
       // 添加
       return this.$speciesApi.insertSpecies(
-        this.form.area, this.form.code, this.form.genusId, this.form.id,
+        this.form.area, this.form.code, this.form.genusId, 0,
         this.form.image, this.form.latin, this.form.name, this.form.plant,
-      );
+      ).then(() => {
+        this.getData();
+      }).catch((res) => {
+        if (res.code === 50000) {
+          this.$message({
+            showClose: true,
+            message: '服务器错误',
+            type: 'warning',
+          });
+        } else if (res.code === 40001) {
+          this.$message({
+            showClose: true,
+            message: '无效的id',
+            type: 'error',
+          });
+        }
+      });
     },
     async getAllGenus() {
       const resp = await this.$genusApi.selectAllGenus(1, 100);
@@ -366,10 +407,19 @@ export default {
       // 根据点击页数请求数据
       this.getData(this.cur * this.totalPage, this.totalPage);
     },
+    pageDown() {
+      this.cur -= 1;
+      this.pageClick();
+    },
+    pageUp() {
+      this.cur += 1;
+      this.pageClick();
+    },
     handleChange(file) {
       const self = this;
       const reader = new FileReader();
       reader.readAsDataURL(file.raw);
+      // eslint-disable-next-line func-names
       reader.onload = function () {
         self.form.image = this.result;
       };

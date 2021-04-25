@@ -40,7 +40,7 @@ const networkUtils = {
   },
   username: {
     setUsername(username) {
-      setCookie('username', username);
+      setCookie('username', username, 1);
     },
     getUsername() {
       return getCookie('username');

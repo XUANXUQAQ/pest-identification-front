@@ -4,6 +4,10 @@ import networkUtils from '@/utils/networkUtils';
 
 Vue.use(VueRouter);
 
+function isEmpty(obj) {
+  return typeof obj === 'undefined' || obj === null || obj === '';
+}
+
 const routes = [
   {
     path: '/',
@@ -48,8 +52,9 @@ router.beforeEach((to, from, next) => {
   }
   // 判断是否登录
   const token = networkUtils.token.getToken();
-  if (token) {
-    if (to.path === '/login') {
+  const username = networkUtils.username.getUsername();
+  if (!isEmpty(token) && !isEmpty(username)) {
+    if (to.path === '/login' || to.path === '/') {
       next({ path: '/Dashboard' });
     }
     next();

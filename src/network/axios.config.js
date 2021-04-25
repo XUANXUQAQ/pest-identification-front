@@ -1,19 +1,10 @@
-/*
- * @Description: axios的简易封装，加载条展示
- * @Author: 蒋淦
- */
-
 import axios from 'axios';
-import { Message } from 'element-ui';
 import NProgress from 'nprogress';
 
 /**
  * 开发与生产环境的代理设置
  */
 const baseURL = '/api';
-// if (process.env.NODE_ENV === 'production') {
-//   baseURL = 'http://rjgc.club:8087';
-// }
 
 // 创建axios实例，最多12秒的请求时延
 const http = axios.create({
@@ -30,7 +21,9 @@ http.interceptors.request.use(
     NProgress.start();
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => {
+    Promise.reject(error);
+  },
 );
 
 /**
@@ -40,22 +33,22 @@ http.interceptors.response.use(
   (config) => {
     // 请求响应时，关闭进度条
     NProgress.done();
-
     if (config.status === 200) {
       const { data } = config;
-      const { code, result } = data;
+      const { code } = data;
       if (code === 20000) {
-        return Promise.resolve(result);
+        return Promise.resolve(data.result);
+      }
+      if (code === 40004) {
+        this.$message({
+          showClose: true,
+          message: 'token无效',
+          type: 'error',
+        });
+        this.$router.push({ path: '/login' });
       }
     }
-    Message({
-      // eslint-disable-next-line no-undef
-      message: data.message,
-      type: 'error',
-      duration: 1000,
-      showClose: true,
-    });
-    return Promise.reject(config);
+    return Promise.reject(config.data);
   },
   (error) => {
     // 请求响应时，关闭进度条
@@ -64,12 +57,6 @@ http.interceptors.response.use(
 
     if (response) {
       // 请求已发出，但是不在2xx的范围
-      Message({
-        message: '请求发生错误',
-        type: 'error',
-        duration: 1000,
-        showClose: true,
-      });
       return Promise.reject(response);
     }
     return Promise.reject(error);

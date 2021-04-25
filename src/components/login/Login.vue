@@ -96,10 +96,22 @@ export default {
             this.$router.push({
               path: this.redirect || '/Dashboard',
             });
+          }).catch((res) => {
+            if (res.code === 40003) {
+              this.$message({
+                showClose: true,
+                message: res.message,
+                type: 'error',
+              });
+            }
           });
           this.loading = false;
         } else {
-          console.log('登录失败');
+          this.$message({
+            showClose: true,
+            message: '用户名或密码错误',
+            type: 'error',
+          });
           return false;
         }
       });
