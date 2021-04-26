@@ -8,13 +8,13 @@
       </div>
       <div style="position: relative; left: 10%">
         <div class="training-data">
-          所有训练集：{{allTrainingData}}
+          所有训练集：{{ allTrainingData }}
         </div>
       </div>
 
       <div style="position: relative; left: 10%">
         <div class="training-data">
-          可用训练集：{{availableTrainData}}
+          可用训练集：{{ availableTrainData }}
         </div>
       </div>
 
@@ -45,9 +45,11 @@
       </el-popover>
       <div style="margin: 10px">
         <span class="training-data">
-          文件保存位置：{{trainDataDir}}
+          文件保存位置：{{ trainDataDir }}
         </span>
-        <el-button @click="dialogUpload = true" type="primary" style="font-size: 14px; margin: 10px 10px 10px 0;position: relative; left: 10%;">点击上传数据集用于训练</el-button>
+        <el-button @click="dialogUpload = true" type="primary"
+                   style="font-size: 14px; margin: 10px 10px 10px 0;position: relative; left: 10%;">点击上传数据集用于训练
+        </el-button>
       </div>
     </el-card>
 
@@ -55,30 +57,28 @@
 
     <el-card style="width: 20%;">
       <div>所有数据类别</div>
-      <el-tag style="margin: 5px" :key="eachClass" v-for="eachClass in allClasses">{{eachClass}}</el-tag>
+      <el-tag style="margin: 5px" :key="eachClass" v-for="eachClass in allClasses">{{ eachClass }}</el-tag>
     </el-card>
 
     <el-card style="
-      position: relative;
-      left: 20%;
-      margin-left: 20px;
-      width: 79%;
-      height: 720px;
-      top: -33.9vw">
-      <div class="echarts-form" style="width: 600px; height: 600px"></div>
+      position: fixed;left: 29%;margin-left: 20px;width: 69%;height: 720px;top: 2vw;">
+      <my-chart style="width: 600px; height: 600px"></my-chart>
       <div style="position:absolute;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);">
         <div>
           <el-tag style="font-size: 14px; margin-left: 20px; margin-right: 20px">
-            训练测试比例：{{trainTestRate}}
+            训练测试比例：
           </el-tag>
-          <el-tag style="font-size: 14px">
-            模型精度：{{mAP}}
+          <el-input style="width: 10%" v-model="trainTestRate"></el-input>
+          <el-tag style="font-size: 14px; margin-left: 20px; margin-right: 20px">
+            模型精度：
           </el-tag>
+          <el-input style="width: 10%" v-model="mAP"></el-input>
         </div>
-        <div style="margin-bottom: 10px;"></div>
-        <el-button type="success">开始训练</el-button>
-        <el-button type="danger">停止训练</el-button>
-        <el-button type="primary">测试精度</el-button>
+        <div style="position: fixed; left: 10%; margin-top: 10px">
+          <el-button type="success" @click="startTrain">开始训练</el-button>
+          <el-button type="danger" @click="stopTrain">停止训练</el-button>
+          <el-button type="primary" @click="testAccuracy">测试精度</el-button>
+        </div>
       </div>
     </el-card>
 
@@ -112,8 +112,11 @@
 </template>
 
 <script>
+import MyChart from '@/components/myChart/MyChart';
+
 export default {
   name: 'DashBoard',
+  components: {MyChart},
   data() {
     return {
       allTrainingData: '0',
@@ -141,6 +144,7 @@ export default {
       trainTestRate: 1,
       mAP: 0.8,
       dialogUpload: false,
+      transitionName: '',
     };
   },
   methods: {
@@ -156,6 +160,15 @@ export default {
     beforeRemove(file) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
+    startTrain() {
+      // todo 开始训练
+    },
+    stopTrain() {
+      // todo 结束训练
+    },
+    testAccuracy() {
+      // todo 测试精度
+    },
   },
 };
 </script>
@@ -163,9 +176,10 @@ export default {
 <style lang="scss" scoped>
 .training-data {
   font-size: 14px;
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   margin: 10px;
 }
+
 .el-upload__tip {
   font-size: 14px;
 }

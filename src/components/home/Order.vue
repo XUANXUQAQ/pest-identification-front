@@ -309,7 +309,7 @@ export default {
       }
       while (left <= right) {
         ar.push(left);
-        left++;
+        left += 1;
       }
       return ar;
     },
