@@ -1,9 +1,12 @@
 import http from '@/network/axios.config';
 import networkUtils from '@/utils/networkUtils';
+import baseURLs from '@/network/baseURLs';
+
+const baseURL = baseURLs.databaseURL;
 
 const genusApi = {
   selectAllGenus(pageNum, pageSize) {
-    const url = '/genus/all';
+    const url = `${baseURL}/genus/all`;
     return http.get(url, {
       params: {
         pageNum,
@@ -15,7 +18,7 @@ const genusApi = {
     });
   },
   selectGenusById(id) {
-    const url = '/genus';
+    const url = `${baseURL}/genus`;
     return http.get(url, {
       params: {
         id,
@@ -26,7 +29,7 @@ const genusApi = {
     });
   },
   selectGenusByName(pageNum, pageSize, name) {
-    const url = '/genus/name';
+    const url = `${baseURL}/genus/name`;
     return http.get(url, {
       params: {
         pageNum,
@@ -39,7 +42,7 @@ const genusApi = {
     });
   },
   updateGenus(id, code, name, familyId) {
-    const url = '/genus';
+    const url = `${baseURL}/genus`;
     return http.put(url, {
       id,
       code,
@@ -55,7 +58,7 @@ const genusApi = {
     });
   },
   deleteGenus(id) {
-    const url = '/genus';
+    const url = `${baseURL}/genus`;
     return http.delete(url, {
       params: {
         id,
@@ -66,7 +69,7 @@ const genusApi = {
     });
   },
   insertGenus(id, code, name, familyId) {
-    const url = `/genus/${familyId}`;
+    const url = `${baseURL}/genus/${familyId}`;
     return http.post(url, {
       id,
       code,

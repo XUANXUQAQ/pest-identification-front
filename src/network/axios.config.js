@@ -1,15 +1,9 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
 
-/**
- * 开发与生产环境的代理设置
- */
-const baseURL = '/api';
-
 // 创建axios实例，最多12秒的请求时延
 const http = axios.create({
   timeout: 1000 * 12,
-  baseURL,
 });
 
 /**

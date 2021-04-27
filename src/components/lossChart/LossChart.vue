@@ -24,28 +24,37 @@ const option = {
     data,
   }],
 };
+
 export default {
-  name: 'my-chart',
+  name: 'loss-chart',
+  props: {
+    properties: {
+      isStart: false,
+      lossData: 100,
+    },
+  },
   data() {
     return {
-      countTest: 0,
-      lossTest: 100,
+      count: 0,
     };
   },
   mounted() {
     // 初始化echarts, theme为light
     this.myChart = echarts.init(document.getElementById('myChart'), 'light');
-    setInterval(this.addData, 250); // Test
+    setInterval(this.addData, 500);
     this.myChart.setOption(option);
   },
   methods: {
     // 添加实时数据
-    addData(count, loss) {
-      if (data.length > 5) {
+    addData() {
+      if (!this.properties.isStart) {
+        return;
+      }
+      if (data.length > 10) {
         data.shift();
       }
-      const dataTest = [this.countTest++, this.lossTest--]; // Test
-      data.push(dataTest); // Test
+      // eslint-disable-next-line no-plusplus
+      data.push([this.count++, this.properties.lossData]);
       this.myChart.setOption({
         series: [{
           name: '模拟数据',

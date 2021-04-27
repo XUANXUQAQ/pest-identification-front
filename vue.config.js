@@ -6,17 +6,6 @@ module.exports = {
 
   devServer: {
     open: true,
-
-    proxy: {
-      // 跨域设置
-      '/api': {
-        target: 'http://localhost:8081',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
   },
   chainWebpack: (config) => {
     const svgRule = config.module.rule('svg');
@@ -29,5 +18,4 @@ module.exports = {
         symbolId: 'icon-[name]',
       });
   },
-
 };

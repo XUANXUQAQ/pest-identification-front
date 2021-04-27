@@ -1,9 +1,12 @@
 import http from '@/network/axios.config';
 import networkUtils from '@/utils/networkUtils';
+import baseURLs from '@/network/baseURLs';
+
+const baseURL = baseURLs.databaseURL;
 
 const familyApi = {
   selectAllFamilies(pageNum, pageSize) {
-    const url = '/family/all';
+    const url = `${baseURL}/family/all`;
     return http.get(url, {
       params: {
         pageNum,
@@ -15,7 +18,7 @@ const familyApi = {
     });
   },
   selectFamilyById(id) {
-    const url = '/family';
+    const url = `${baseURL}/family`;
     return http.get(url, {
       params: {
         id,
@@ -26,7 +29,7 @@ const familyApi = {
     });
   },
   selectFamiliesByName(pageNum, pageSize, name) {
-    const url = '/family/name';
+    const url = `${baseURL}/family/name`;
     return http.get(url, {
       params: {
         pageNum,
@@ -39,7 +42,7 @@ const familyApi = {
     });
   },
   updateFamily(id, code, name, orderId) {
-    const url = '/family';
+    const url = `${baseURL}/family`;
     return http.put(url, {
       id,
       code,
@@ -55,7 +58,7 @@ const familyApi = {
     });
   },
   insertFamily(id, code, name, orderId) {
-    const url = `/family/${orderId}`;
+    const url = `${baseURL}/family/${orderId}`;
     return http.post(url, {
       id,
       code,
@@ -68,7 +71,7 @@ const familyApi = {
     });
   },
   deleteFamily(id) {
-    const url = '/family';
+    const url = `${baseURL}/family`;
     return http.delete(url, {
       params: {
         id,

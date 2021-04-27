@@ -1,9 +1,12 @@
 import http from '@/network/axios.config';
 import networkUtils from '@/utils/networkUtils';
+import baseURLs from '@/network/baseURLs';
+
+const baseURL = baseURLs.databaseURL;
 
 const orderApi = {
   selectOrderById(id) {
-    const url = '/order';
+    const url = `${baseURL}/order`;
     return http.get(url, {
       params: {
         id,
@@ -14,7 +17,7 @@ const orderApi = {
     });
   },
   selectAllOrders(pageNum, pageSize) {
-    const url = '/order/all';
+    const url = `${baseURL}/order/all`;
     return http.get(url, {
       params: {
         pageNum,
@@ -26,7 +29,7 @@ const orderApi = {
     });
   },
   selectOrderByName(pageNum, pageSize, name) {
-    const url = '/order/name';
+    const url = `${baseURL}/order/name`;
     return http.get(url, {
       params: {
         pageNum,
@@ -39,7 +42,7 @@ const orderApi = {
     });
   },
   insertOrder(id, code, name) {
-    const url = '/order';
+    const url = `${baseURL}/order`;
     return http.post(url, {
       id,
       code,
@@ -52,7 +55,7 @@ const orderApi = {
     });
   },
   updateOrder(id, code, name) {
-    const url = '/order';
+    const url = `${baseURL}/order`;
     return http.put(url, {
       id,
       code,
@@ -65,7 +68,7 @@ const orderApi = {
     });
   },
   deleteOrder(id) {
-    const url = '/order';
+    const url = `${baseURL}/order`;
     return http.delete(url, {
       params: {
         id,

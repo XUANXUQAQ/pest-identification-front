@@ -45,7 +45,7 @@
         </el-menu>
         <div style="position: relative; top: 55%">
           <div class="user">
-            <el-tag type="success" class="user">用户：{{ username }}</el-tag>
+            <el-tag type="primary" class="user">用户：{{ username }}</el-tag>
           </div>
           <div style="height: 10px"></div>
           <el-button

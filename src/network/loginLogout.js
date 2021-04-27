@@ -1,5 +1,8 @@
 import http from '@/network/axios.config';
 import networkUtils from '@/utils/networkUtils';
+import baseURLs from '@/network/baseURLs';
+
+const baseURL = baseURLs.databaseURL;
 
 const loginLogoutApi = {
   /**
@@ -9,7 +12,7 @@ const loginLogoutApi = {
    * @returns
    */
   login(username, password) {
-    const url = '/login';
+    const url = `${baseURL}/login`;
     return http.post(
       url,
       networkUtils.args.form({

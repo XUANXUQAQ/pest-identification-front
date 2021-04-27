@@ -1,13 +1,8 @@
-/*
- * @Description: 网络请求
- * @Author: 蒋淦
- * @LastEditors: 蒋淦
- * @Date: 2021-04-22 21:50:57
- * @LastEditTime: 2021-04-22 22:43:00
- */
-
 import networkUtils from '@/utils/networkUtils';
+import baseURLs from '@/network/baseURLs';
 import http from './axios.config';
+
+const baseURL = baseURLs.databaseURL;
 
 const speciesApi = {
   /**
@@ -17,7 +12,7 @@ const speciesApi = {
    * @returns
    */
   getAllSpecies(pageNum, pageSize) {
-    const url = '/species/all';
+    const url = `${baseURL}/species/all`;
     return http.get(url, {
       params: {
         pageNum,
@@ -29,7 +24,7 @@ const speciesApi = {
     });
   },
   getSpeciesById(id) {
-    const url = '/species';
+    const url = `${baseURL}/species`;
     return http.get(url, {
       params: {
         id,
@@ -40,7 +35,7 @@ const speciesApi = {
     });
   },
   getSpeciesByName(pageNum, pageSize, name) {
-    const url = '/species/name';
+    const url = `${baseURL}/species/name`;
     return http.get(url, {
       params: {
         pageNum,
@@ -53,7 +48,7 @@ const speciesApi = {
     });
   },
   getSpeciesByCode(code) {
-    const url = `/species/${code}`;
+    const url = `${baseURL}/species/${code}`;
     return http.get(url, {
       params: {
         code,
@@ -64,7 +59,7 @@ const speciesApi = {
     });
   },
   insertSpecies(area, code, genusId, id, image, latin, name, plant) {
-    const url = '/species';
+    const url = `${baseURL}/species`;
     return http.post(url, {
       area, code, genusId, id, image, latin, name, plant,
     },
@@ -75,7 +70,7 @@ const speciesApi = {
     });
   },
   updateSpecies(area, code, genusId, id, image, latin, name, plant) {
-    const url = '/species';
+    const url = `${baseURL}/species`;
     return http.put(url, {
       area, code, genusId, id, image, latin, name, plant,
     },
@@ -86,7 +81,7 @@ const speciesApi = {
     });
   },
   deleteSpecies(id) {
-    const url = '/species';
+    const url = `${baseURL}/species`;
     return http.delete(url, {
       params: {
         id,

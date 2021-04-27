@@ -1,5 +1,5 @@
 {
-  "name": "v-3",
+  "name": "pest-identification",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,14 +11,10 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "echarts": "^4.3.0",
-    "element-plus": "^1.0.2-beta.40",
     "element-ui": "^2.15.1",
-    "highcharts-vue": "^1.3.5",
     "nprogress": "^0.2.0",
-    "ref": "^1.3.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vue-svg-icon": "^1.2.9",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
