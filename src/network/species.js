@@ -58,27 +58,27 @@ const speciesApi = {
       },
     });
   },
-  insertSpecies(area, code, genusId, id, image, latin, name, plant) {
+  insertSpecies(area, code, genus_id, id, image, latin, name, plant) {
     const url = `${baseURL}/species`;
     return http.post(url, {
-      area, code, genusId, id, image, latin, name, plant,
-    },
-    {
-      headers: {
-        token: networkUtils.token.getToken(),
+        area, code, genus_id, id, image, latin, name, plant,
       },
-    });
+      {
+        headers: {
+          token: networkUtils.token.getToken(),
+        },
+      });
   },
-  updateSpecies(area, code, genusId, id, image, latin, name, plant) {
+  updateSpecies(area, code, genus_id, id, image, latin, name, plant) {
     const url = `${baseURL}/species`;
     return http.put(url, {
-      area, code, genusId, id, image, latin, name, plant,
-    },
-    {
-      headers: {
-        token: networkUtils.token.getToken(),
+        area, code, genus_id, id, image, latin, name, plant,
       },
-    });
+      {
+        headers: {
+          token: networkUtils.token.getToken(),
+        },
+      });
   },
   deleteSpecies(id) {
     const url = `${baseURL}/species`;

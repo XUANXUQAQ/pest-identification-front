@@ -29,12 +29,21 @@
     </div>
     <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="参考图片" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="标本图片" :width="(screenWidth / 10) + 'px'">
         <template slot-scope="{row}">
           <el-popover placement="right" title="" trigger="hover">
-            <el-image :src="row.image"></el-image>
-            <el-image slot="reference" :src="row.image" :alt="row.image" style="max-height: 50px;max-width: 50px"></el-image>
+            <el-image :src="getImageFromBase64(row.image)"></el-image>
+            <el-image slot="reference" :src="getImageFromBase64(row.image)" :alt="getImageFromBase64(row.image)"
+                      style="max-height: 50px;max-width: 50px"></el-image>
           </el-popover>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="生态图片" :width="(screenWidth / 10) + 'px'">
+        <template slot-scope="{row}">
+          <el-button @click="showInhabitantImageList(row.image)">
+            查看所有图片
+          </el-button>
         </template>
       </el-table-column>
 
@@ -156,7 +165,7 @@
         <el-form-item label="目名称" :label-width="formLabelWidth">
           <el-input v-model="form.orderName" autocomplete="off" :disabled="true" class="form-input"></el-input>
         </el-form-item>
-        <el-form-item label="图片" :label-width="formLabelWidth" class="form-input">
+        <el-form-item label="标本图片" :label-width="formLabelWidth" class="form-input">
           <el-upload
             action="https://jsonplaceholder.typicode.com/posts/"
             :on-change="handleChange"
@@ -165,6 +174,24 @@
             :limit="1"
             :on-exceed="handleExceed"
             :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <template #tip>
+              <div class="el-upload__tip">只能上传 jpg/png 文件，且不超过 500kb</div>
+            </template>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="生态图片" :label-width="formLabelWidth" class="form-input">
+          <el-upload
+            action="https://jsonplaceholder.typicode.com/posts/"
+            list-type="picture"
+            :on-change="handleInhabitantChange"
+            :before-remove="beforeRemove"
+            :on-remove="handleInhabitantRemove"
+            multiple
+            :limit="10"
+            :on-exceed="handleInhabitantExceed"
+            :file-list="form.inhabitantImages"
           >
             <el-button size="small" type="primary">点击上传</el-button>
             <template #tip>
@@ -193,6 +220,19 @@
     </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      title="提示"
+      :visible="dialogInhabitantVisible"
+      width="30%">
+      <h3>生态图片</h3>
+      <el-image :src="item.image" v-for="item in inhabitantImageList" height="90%" list-type="picture"></el-image>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogInhabitantVisible = false">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -212,12 +252,13 @@ export default {
         value: 'id',
         label: 'ID',
       },
-      {
-        value: 'name',
-        label: '名称',
-      }],
+        {
+          value: 'name',
+          label: '名称',
+        }],
       selectValue: '', // 下拉框中选择id还是name
       dialogFormVisible: false,
+      dialogInhabitantVisible: false,
       form: {
         id: 0,
         code: '',
@@ -232,6 +273,10 @@ export default {
         orderName: '',
         orderId: '',
         image: '',
+        inhabitantImages: [{
+          name: '',
+          url: '',
+        }],
       },
       isUpdate: false,
       formLabelWidth: '120px',
@@ -239,6 +284,7 @@ export default {
       dialogDeleteVisible: false,
       allGenus: null,
       fileList: [],
+      inhabitantImageList: [],
     };
   },
   created() {
@@ -291,6 +337,26 @@ export default {
         });
       });
     },
+    getImageFromBase64(base64) {
+      if (base64) {
+        return base64.split('|')[0];
+      }
+      return '';
+    },
+    showInhabitantImageList(base64) {
+      this.dialogInhabitantVisible = true;
+      this.inhabitantImageList = this.getInhabitantImageListFromBase64(base64).map((v) => ({
+        name: 'img',
+        url: '',
+        image: v
+      }));
+    },
+    getInhabitantImageListFromBase64(base64) {
+      if (base64) {
+        return base64.split('|')[1].split('&').filter((obj) => (!(typeof obj === 'undefined' || obj === null || obj === '')));
+      }
+      return [];
+    },
     showAddForm() {
       this.dialogFormVisible = true;
       this.dialogTitle = '添加一个种';
@@ -307,6 +373,9 @@ export default {
       this.form.familyName = '';
       this.form.orderId = 0;
       this.form.orderName = '';
+      this.form.image = '';
+      this.form.inhabitantImages = [];
+      this.fileList = [];
     },
     showUpdateForm(row) {
       this.dialogFormVisible = true;
@@ -324,6 +393,12 @@ export default {
       this.form.familyName = row.family_name;
       this.form.orderId = row.order_id;
       this.form.orderName = row.order_name;
+      this.form.image = this.getImageFromBase64(row.image);
+      this.form.inhabitantImages = this.getInhabitantImageListFromBase64(row.image).map((v) => ({name: 'img', url: v}));
+      this.fileList = [{
+        name: 'img',
+        url: this.form.image,
+      }];
     },
     showDeleteForm(row) {
       this.dialogDeleteVisible = true;
@@ -351,7 +426,7 @@ export default {
         // 更新
         return this.$speciesApi.updateSpecies(
           this.form.area, this.form.code, this.form.genusId, this.form.id,
-          this.form.image, this.form.latin, this.form.name, this.form.plant,
+          this.getImageData(this.form.image, this.form.inhabitantImages), this.form.latin, this.form.name, this.form.plant,
         ).then(() => {
           this.getData();
         }).catch((res) => {
@@ -373,7 +448,7 @@ export default {
       // 添加
       return this.$speciesApi.insertSpecies(
         this.form.area, this.form.code, this.form.genusId, 0,
-        this.form.image, this.form.latin, this.form.name, this.form.plant,
+        this.getImageData(this.form.image, this.form.inhabitantImages), this.form.latin, this.form.name, this.form.plant,
       ).then(() => {
         this.getData();
       }).catch((res) => {
@@ -391,6 +466,14 @@ export default {
           });
         }
       });
+    },
+    getImageData(image, inhabitantImageList) {
+      const tmp = [];
+      inhabitantImageList.forEach((v) => {
+        tmp.push(v.url);
+      });
+      const tmpImage = `${image}|`;
+      return tmpImage + tmp.join('&');
     },
     async getAllGenus() {
       const resp = await this.$genusApi.selectAllGenus(1, 100);
@@ -424,8 +507,23 @@ export default {
         self.form.image = this.result;
       };
     },
+    handleInhabitantChange(file) {
+      const self = this;
+      const reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      // eslint-disable-next-line func-names
+      reader.onload = function () {
+        self.form.inhabitantImages.push({name: 'img', url: this.result});
+      };
+    },
+    handleInhabitantRemove(file) {
+      this.form.inhabitantImages = this.form.inhabitantImages.filter((each) => each !== file);
+    },
     handleExceed() {
       this.$message.warning('最多仅能添加1个文件');
+    },
+    handleInhabitantExceed() {
+      this.$message.warning('最多仅能添加10个文件');
     },
     beforeRemove(file) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -469,20 +567,27 @@ export default {
 
 <style lang="scss" scoped>
 /*分页*/
-.page-bar{
-  width: 80%;margin-left: 35%;margin-right: auto;margin-top: 3%;
+.page-bar {
+  width: 80%;
+  margin-left: 35%;
+  margin-right: auto;
+  margin-top: 3%;
 }
-ul,li{
+
+ul, li {
   margin: 0;
   padding: 0;
 }
-li{
+
+li {
   list-style: none
 }
-.page-bar li:first-child>a {
+
+.page-bar li:first-child > a {
   margin-left: 0
 }
-.page-bar a{
+
+.page-bar a {
   border: 1px solid #ddd;
   text-decoration: none;
   position: relative;
@@ -494,20 +599,24 @@ li{
   cursor: pointer;
   margin-right: 20px;
 }
-.page-bar a:hover{
+
+.page-bar a:hover {
   background-color: #eee;
 }
-.page-bar a.banclick{
-  cursor:not-allowed;
+
+.page-bar a.banclick {
+  cursor: not-allowed;
 }
-.page-bar .active a{
+
+.page-bar .active a {
   color: #fff;
   cursor: default;
   background-color: #E96463;
   border-color: #E96463;
 }
-.page-bar i{
-  font-style:normal;
+
+.page-bar i {
+  font-style: normal;
   color: #d44950;
   margin: 0 4px;
   font-size: 12px;
