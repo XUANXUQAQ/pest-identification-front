@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 90vh">
+  <div style="height: 90vh;">
     <el-card style="width: 20%; height: 400px">
       <div>
         <span style="font-size: 20px">
@@ -27,7 +27,7 @@
         <template #reference>
           <el-button type="danger"
                      style="margin: 10px;">
-            点击查看文件的错误
+            查看文件的错误
           </el-button>
         </template>
         <el-tag style="margin: 5px" type="danger">
@@ -49,7 +49,7 @@
         </span>
         <el-button @click="dialogUpload = true" type="primary"
                    style="font-size: 14px; margin: 10px 10px 10px 0;position: relative; left: 10%;">
-          点击上传数据集用于训练
+          上传数据集用于训练
         </el-button>
         <el-button style="font-size: 14px; margin: 10px 10px 10px 0;position: relative; left: 10%;"
                    @click="showAvailableModels">修改已经训练好的模型
@@ -73,32 +73,6 @@
       </el-table>
     </el-card>
 
-    <el-card style="
-      position: fixed;left: 29%;margin-left: 20px;width: 69%;height: 94vh;top: 2vw;">
-      <loss-chart v-bind:properties="lossChartProperties" style="width: 600px; height: 600px"></loss-chart>
-      <div
-        style="position:fixed;left:67vw; bottom: 20vh; -webkit-transform:translateX(-50%);transform:translateX(-50%);">
-        <div>
-          <el-tag style="font-size: 14px; margin-left: 20px; margin-right: 20px">
-            训练测试比例：
-          </el-tag>
-          <el-input style="width: 10%" v-model="trainTestRate"></el-input>
-          <el-tag style="font-size: 14px; margin-left: 50px; margin-right: 20px">
-            模型精度：{{ mAP }}
-          </el-tag>
-          <el-tag style="font-size: 14px;">
-            当前训练轮数：{{ iterationCount }}
-          </el-tag>
-        </div>
-        <div style="position: fixed; left: 3%; margin-top: 10px">
-          <el-button type="primary" @click="updateTrainPercent">修改训练测试比例</el-button>
-          <el-button type="success" @click="startTrain">开始训练</el-button>
-          <el-button type="danger" @click="stopTrain(true)">停止训练</el-button>
-          <el-button type="primary" @click="testAccuracy">测试精度</el-button>
-        </div>
-      </div>
-    </el-card>
-
     <el-dialog
       title="提示"
       :visible="dialogUpload"
@@ -111,7 +85,7 @@
         :on-exceed="handleExceed"
         :file-list="imageList"
       >
-        <el-button size="small" type="primary">点击上传</el-button>
+        <el-button size="small" type="primary">上传</el-button>
         <template #tip>
           <div class="el-upload__tip">请将训练集以zip的格式进行压缩然后上传</div>
           <div class="el-upload__tip">zip文件中包含两个文件夹，分别为JPEGImages和Annotations</div>
@@ -147,6 +121,34 @@
         </span>
       </template>
     </el-dialog>
+    <el-card style="
+      position: fixed;left: 29%;margin-left: 20px;width: 69%;height: 94vh;top: 2vw;">
+      <span style="position: fixed;left: 33vw;font-size: 18px;">
+        损失函数状态
+      </span>
+      <loss-chart v-bind:properties="lossChartProperties" style="width: 80vw; height: 600px"></loss-chart>
+      <div
+        style="position:fixed;left:67vw; bottom: 20vh; -webkit-transform:translateX(-50%);transform:translateX(-50%);">
+        <div>
+          <el-tag style="font-size: 14px; margin-left: 20px; margin-right: 20px">
+            训练测试比例：
+          </el-tag>
+          <el-input style="width: 10%" v-model="trainTestRate"></el-input>
+          <el-tag style="font-size: 14px; margin-left: 50px; margin-right: 20px">
+            模型精度：{{ mAP }}
+          </el-tag>
+          <el-tag style="font-size: 14px;">
+            当前训练轮数：{{ iterationCount }}
+          </el-tag>
+        </div>
+        <div style="position: fixed; left: 3%; margin-top: 10px">
+          <el-button type="primary" @click="updateTrainPercent">修改训练测试比例</el-button>
+          <el-button type="success" @click="startTrain">开始训练</el-button>
+          <el-button type="danger" @click="stopTrain(true)">停止训练</el-button>
+          <el-button type="primary" @click="testAccuracy">测试精度</el-button>
+        </div>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -238,6 +240,7 @@ export default {
     },
     startTrain() {
       this.lossChartProperties.isStart = true;
+      LossChart.clearData();
       this.$yolov4Api.startTrain().catch((res) => {
         this.$message({
           showClose: true,

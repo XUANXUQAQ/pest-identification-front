@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="transform: scale(1);">
     <div style="margin: 10px">
       <el-button
         type="success"
@@ -79,18 +79,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--分页-->
-    <div class="page-bar">
-      <el-pagination
-        :page-size="totalPage"
-        :page-count="8"
-        :total="totalPage * all"
-        layout="prev, pager, next"
-        :prev-click="pageDown"
-        :next-click="pageUp"
-        @current-change="btnClick">
-      </el-pagination>
-    </div>
 
     <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
       <el-form :model="form">
@@ -137,6 +125,18 @@
     </span>
       </template>
     </el-dialog>
+    <!--分页-->
+    <div class="page-bar">
+      <el-pagination
+        :page-size="totalPage"
+        :page-count="8"
+        :total="totalPage * all"
+        layout="prev, pager, next"
+        :prev-click="pageDown"
+        :next-click="pageUp"
+        @current-change="btnClick">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -379,8 +379,11 @@ export default {
 
 <style lang="scss" scoped>
 /*分页*/
-.page-bar{
-  width: 80%;margin-left: 35%;margin-right: auto;margin-top: 3%;
+.page-bar {
+  width: 80%;
+  position: fixed;
+  margin: 0 auto 0 35%;
+  bottom: -10vh;
 }
 ul,li{
   margin: 0;

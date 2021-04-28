@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container style="transform: scale(1);">
     <el-container class="el-body">
       <el-aside width="200px" :style="{height: sideBarHeight}">
         <el-menu
@@ -43,7 +43,7 @@
             <span slot="title">种管理</span>
           </el-menu-item>
         </el-menu>
-        <div style="position: relative; top: 55%">
+        <div style="position: fixed; bottom: 15vh; left: 1.8vw;">
           <div class="user">
             <el-tag type="primary" class="user">用户：{{ username }}</el-tag>
           </div>
@@ -51,7 +51,7 @@
           <el-button
             type="danger"
             @click="logout"
-            style="position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);width: 125px">
+            style="position:fixed; bottom: 10vh; left: 1.8vw; width: 125px">
             登出
           </el-button>
         </div>

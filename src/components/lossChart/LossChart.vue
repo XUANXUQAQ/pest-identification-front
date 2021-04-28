@@ -1,14 +1,14 @@
 <template>
-  <div style="width: 100%; height: 100%" id="myChart"></div>
+  <div style="width: 80vw; height: 100%" id="myChart"></div>
 </template>
 
 <script>
 import echarts from 'echarts';
 
-const data = [];
+let data = [];
 const option = {
   title: {
-    text: '损失函数状态',
+    text: '',
   },
   xAxis: {
     type: 'value',
@@ -50,7 +50,7 @@ export default {
       if (!this.properties.isStart) {
         return;
       }
-      if (data.length > 10) {
+      if (data.length > 16) {
         data.shift();
       }
       // eslint-disable-next-line no-plusplus
@@ -71,10 +71,13 @@ export default {
             show: false,
           },
           min: data[0][0],
-          max: data[data.length - 1][0] + 1,
+          max: data[data.length - 1][0] + 3,
         }],
       });
     },
+  },
+  clearData() {
+    data = [];
   },
 };
 </script>
@@ -82,7 +85,8 @@ export default {
 <style>
 #myChart {
   width: 100%;
-  height: 500px;
   margin: 0 auto;
+  position: fixed;
+  left: 25vw;
 }
 </style>
