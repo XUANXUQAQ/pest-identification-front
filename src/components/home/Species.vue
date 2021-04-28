@@ -27,8 +27,7 @@
       <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
       <el-table-column :show-overflow-tooltip="true" align="center" label="标本图片" :width="(screenWidth / 10) + 'px'">
         <template slot-scope="{row}">
           <el-popover placement="right" title="" trigger="hover">
@@ -189,7 +188,7 @@
             :before-remove="beforeRemove"
             :on-remove="handleInhabitantRemove"
             multiple
-            :limit="10"
+            :limit="9"
             :on-exceed="handleInhabitantExceed"
             :file-list="form.inhabitantImages"
           >
@@ -222,10 +221,9 @@
     </el-dialog>
 
     <el-dialog
-      title="提示"
+      title="生态图片"
       :visible="dialogInhabitantVisible"
       width="30%">
-      <h3>生态图片</h3>
       <el-image :src="item.image" v-for="item in inhabitantImageList" height="90%" list-type="picture"></el-image>
       <template #footer>
         <span class="dialog-footer">
@@ -245,7 +243,7 @@ export default {
       list: null, // 所有结果
       all: 1, // 总页数
       cur: 1, // 当前页码
-      totalPage: 10, // 当前条数
+      totalPage: 9, // 当前条数
       screenWidth: document.body.clientWidth - 250, // 屏幕尺寸
       searchValue: '', // 搜索框中的值
       options: [{
@@ -348,7 +346,7 @@ export default {
       this.inhabitantImageList = this.getInhabitantImageListFromBase64(base64).map((v) => ({
         name: 'img',
         url: '',
-        image: v
+        image: v,
       }));
     },
     getInhabitantImageListFromBase64(base64) {
@@ -523,7 +521,7 @@ export default {
       this.$message.warning('最多仅能添加1个文件');
     },
     handleInhabitantExceed() {
-      this.$message.warning('最多仅能添加10个文件');
+      this.$message.warning('最多仅能添加9个文件');
     },
     beforeRemove(file) {
       return this.$confirm(`确定移除 ${file.name}？`);
