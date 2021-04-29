@@ -151,7 +151,7 @@
           <el-input v-model="form.area" autocomplete="off" class="form-input"></el-input>
         </el-form-item>
         <el-form-item label="属名称" :label-width="formLabelWidth">
-          <el-select v-model="form.genusId" placeholder="请选择属名称">
+          <el-select filterable v-model="form.genusId" placeholder="请选择属名称">
             <el-option
               v-for="item in allGenus"
               :key="item.id"

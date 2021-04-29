@@ -158,7 +158,7 @@ import baseURLs from '@/network/baseURLs';
 
 export default {
   name: 'DashBoard',
-  components: {LossChart},
+  components: { LossChart },
   data() {
     return {
       allTrainingData: '0',
@@ -192,7 +192,7 @@ export default {
   mounted() {
     setInterval(this.updateLossData, 500);
     this.$yolov4Api.getAllClasses().then((res) => {
-      this.allClasses = res.classes.map((v) => ({className: v}));
+      this.allClasses = res.classes.map((v) => ({ className: v }));
     });
     this.checkTrainData();
   },
@@ -303,13 +303,13 @@ export default {
         });
       });
     },
-    checkTrainData() {
+    async checkTrainData() {
       this.$yolov4Api.checkTrainFiles().then((res) => {
         let tmp = res.xmlList;
-        tmp = tmp.map((v) => ({path: v}));
+        tmp = tmp.map((v) => ({ path: v }));
         this.damagedXml = tmp;
         tmp = res.jpgList;
-        tmp = tmp.map((v) => ({path: v}));
+        tmp = tmp.map((v) => ({ path: v }));
         this.damagedJpg = tmp;
         this.$yolov4Api.getAllTrainData().then((res2) => {
           this.allTrainingData = res2.num;

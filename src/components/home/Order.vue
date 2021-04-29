@@ -12,7 +12,7 @@
         <span style="font-size: 20px">
         根据
       </span>
-      <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
+      <el-select filterable v-model="selectValue" placeholder="请选择" style="width: 130px">
         <el-option
           v-for="item in options"
           :key="item.value"

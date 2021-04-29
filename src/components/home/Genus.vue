@@ -12,7 +12,7 @@
         <span style="font-size: 20px">
         根据
       </span>
-      <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
+      <el-select filterable v-model="selectValue" placeholder="请选择" style="width: 130px">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -92,7 +92,7 @@
           <el-input v-model="form.name" autocomplete="off" class="form-input"></el-input>
         </el-form-item>
         <el-form-item label="科名称" :label-width="formLabelWidth">
-          <el-select v-model="form.familyId" placeholder="请选择科名称">
+          <el-select filterable v-model="form.familyId" placeholder="请选择科名称">
             <el-option
               v-for="item in allFamilies"
               :key="item.id"
