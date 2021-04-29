@@ -1,5 +1,5 @@
 <template>
-  <div style="transform: scale(1);">
+  <div>
     <div style="margin: 10px">
       <el-button
         type="success"
@@ -150,7 +150,7 @@ export default {
       all: 1, // 总页数
       cur: 1, // 当前页码
       totalPage: 10, // 当前条数
-      screenWidth: document.body.clientWidth - 250, // 屏幕尺寸
+      screenWidth: document.body.clientWidth - 260, // 屏幕尺寸
       searchValue: '',
       options: [{
         value: 'id',
@@ -176,13 +176,33 @@ export default {
       dialogTitle: '',
       dialogDeleteVisible: false,
       allFamilies: null,
+      setPageSizeCount: 0,
     };
   },
-  created() {
-    this.getData();
-    this.getAllFamilies();
-  },
   methods: {
+    setPageSize() {
+      if (this.setPageSizeCount <= 5) {
+        this.setPageSizeCount += 1;
+        const totalHeight = document.body.clientHeight * 0.75;
+        let i = 0;
+        let min = totalHeight;
+        let minNum = 0;
+        for (; i <= 9; i += 1) {
+          const tmp = totalHeight - i * 80;
+          if (tmp < min && tmp > 0) {
+            min = tmp;
+            minNum = i;
+          }
+        }
+        this.totalPage = minNum;
+      } else {
+        this.$message({
+          showClose: true,
+          message: '拖动窗口过于频繁',
+          type: 'warning',
+        });
+      }
+    },
     async getData(selectValue) {
       this.listLoading = true;
       let result;
@@ -335,10 +355,26 @@ export default {
   },
   // 钩子函数
   mounted() {
+    this.setPageSize();
+    this.getData();
+    this.getAllFamilies();
     const that = this;
+    setInterval(() => {
+      if (this.setPageSizeCount > 0) {
+        this.setPageSizeCount -= 1;
+      }
+    }, 3000);
+    setInterval(() => {
+      if (this.isWindowResized) {
+        this.isWindowResized = false;
+        window.screenWidth = document.body.clientWidth;
+        that.screenWidth = window.screenWidth - 250;
+        that.setPageSize();
+        that.getData();
+      }
+    }, 500);
     window.onresize = () => (() => {
-      window.screenWidth = document.body.clientWidth;
-      that.screenWidth = window.screenWidth - 250;
+      that.isWindowResized = true;
     })();
   },
   computed: {
@@ -361,7 +397,7 @@ export default {
       }
       while (left <= right) {
         ar.push(left);
-        left++;
+        left += 1;
       }
       return ar;
     },
@@ -383,19 +419,23 @@ export default {
   width: 80%;
   position: fixed;
   margin: 0 auto 0 35%;
-  bottom: -10vh;
+  bottom: 10vh;
 }
-ul,li{
+
+ul, li {
   margin: 0;
   padding: 0;
 }
-li{
+
+li {
   list-style: none
 }
-.page-bar li:first-child>a {
+
+.page-bar li:first-child > a {
   margin-left: 0
 }
-.page-bar a{
+
+.page-bar a {
   border: 1px solid #ddd;
   text-decoration: none;
   position: relative;
@@ -407,20 +447,24 @@ li{
   cursor: pointer;
   margin-right: 20px;
 }
-.page-bar a:hover{
+
+.page-bar a:hover {
   background-color: #eee;
 }
-.page-bar a.banclick{
-  cursor:not-allowed;
+
+.page-bar a.banclick {
+  cursor: not-allowed;
 }
-.page-bar .active a{
+
+.page-bar .active a {
   color: #fff;
   cursor: default;
   background-color: #E96463;
   border-color: #E96463;
 }
-.page-bar i{
-  font-style:normal;
+
+.page-bar i {
+  font-style: normal;
   color: #d44950;
   margin: 0 4px;
   font-size: 12px;

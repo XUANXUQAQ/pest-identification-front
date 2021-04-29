@@ -1,7 +1,7 @@
 <template>
-  <el-container style="transform: scale(1);">
+  <el-container>
     <el-container class="el-body">
-      <el-aside width="200px" :style="{height: sideBarHeight}">
+      <el-aside width="10vw" :style="{height: sideBarHeight}">
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -105,7 +105,7 @@ export default {
 <style lang="scss" scoped>
 
 .el-body {
-  height: 90%;
+  height: 90vh;
 }
 
 .title {

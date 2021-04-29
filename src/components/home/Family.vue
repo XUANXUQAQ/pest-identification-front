@@ -1,5 +1,5 @@
 <template>
-  <div style="transform: scale(1);">
+  <div>
     <div style="margin: 10px">
       <el-button
         type="success"
@@ -12,7 +12,7 @@
         <span style="font-size: 20px;">
       根据
       </span>
-        <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
+        <el-select v-model="selectValue" placeholder="请选择" style="width: 10vw">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -23,7 +23,7 @@
         <span style="font-size: 20px">
       搜索科
     </span>
-        <el-input v-model="searchValue" placeholder="请输入名称" style="width: 30%"></el-input>
+        <el-input v-model="searchValue" placeholder="请输入名称" style="width: 10vw"></el-input>
         <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
@@ -140,7 +140,7 @@ export default {
       all: 1, // 总页数
       cur: 1, // 当前页码
       totalPage: 10, // 当前条数
-      screenWidth: document.body.clientWidth - 250, // 屏幕尺寸
+      screenWidth: document.body.clientWidth - 260, // 屏幕尺寸
       searchValue: '',
       options: [{
         value: 'id',
@@ -165,21 +165,57 @@ export default {
       dialogTitle: '',
       dialogDeleteVisible: false,
       allOrders: null,
+      setPageSizeCount: 0,
     };
-  },
-  created() {
-    this.getData();
-    this.getAllOrders();
   },
   // 钩子函数
   mounted() {
+    this.setPageSize();
+    this.getData();
+    this.getAllOrders();
     const that = this;
+    setInterval(() => {
+      if (this.setPageSizeCount > 0) {
+        this.setPageSizeCount -= 1;
+      }
+    }, 3000);
+    setInterval(() => {
+      if (this.isWindowResized) {
+        this.isWindowResized = false;
+        window.screenWidth = document.body.clientWidth;
+        that.screenWidth = window.screenWidth - 250;
+        that.setPageSize();
+        that.getData();
+      }
+    }, 500);
     window.onresize = () => (() => {
-      window.screenWidth = document.body.clientWidth;
-      that.screenWidth = window.screenWidth - 250;
+      that.isWindowResized = true;
     })();
   },
   methods: {
+    setPageSize() {
+      if (this.setPageSizeCount <= 5) {
+        this.setPageSizeCount += 1;
+        const totalHeight = document.body.clientHeight * 0.75;
+        let i = 0;
+        let min = totalHeight;
+        let minNum = 0;
+        for (; i <= 9; i += 1) {
+          const tmp = totalHeight - i * 80;
+          if (tmp < min && tmp > 0) {
+            min = tmp;
+            minNum = i;
+          }
+        }
+        this.totalPage = minNum;
+      } else {
+        this.$message({
+          showClose: true,
+          message: '拖动窗口过于频繁',
+          type: 'warning',
+        });
+      }
+    },
     async getAllOrders() {
       const resp = await this.$orderApi.selectAllOrders(1, 100);
       this.allOrders = resp.data;
@@ -351,7 +387,7 @@ export default {
   width: 80%;
   position: fixed;
   margin: 0 auto 0 35%;
-  bottom: -10vh;
+  bottom: 10vh;
 }
 
 ul, li {

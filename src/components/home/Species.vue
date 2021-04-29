@@ -1,5 +1,5 @@
 <template>
-  <div style="transform: scale(1);">
+  <div>
     <div style="margin: 10px">
       <el-button
         type="success"
@@ -100,6 +100,7 @@
             type="primary"
             size="small"
             icon="el-icon-circle-check-outline"
+            style="width: 45%"
             @click="showUpdateForm(row)"
           >
             编辑
@@ -108,6 +109,7 @@
             type="danger"
             size="small"
             icon="el-icon-circle-check-outline"
+            style="width: 45%"
             @click="showDeleteForm(row)"
           >
             删除
@@ -115,6 +117,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div class="page-bar">
+      <el-pagination
+        :page-size="totalPage"
+        :page-count="8"
+        :total="totalPage * all"
+        layout="prev, pager, next"
+        :prev-click="pageDown"
+        :next-click="pageUp"
+        @current-change="btnClick">
+      </el-pagination>
+    </div>
 
     <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
       <el-form :model="form">
@@ -220,18 +234,6 @@
         </span>
       </template>
     </el-dialog>
-    <!--分页-->
-    <div class="page-bar">
-      <el-pagination
-        :page-size="totalPage"
-        :page-count="8"
-        :total="totalPage * all"
-        layout="prev, pager, next"
-        :prev-click="pageDown"
-        :next-click="pageUp"
-        @current-change="btnClick">
-      </el-pagination>
-    </div>
   </div>
 </template>
 
@@ -245,16 +247,16 @@ export default {
       all: 1, // 总页数
       cur: 1, // 当前页码
       totalPage: 9, // 当前条数
-      screenWidth: document.body.clientWidth - 250, // 屏幕尺寸
+      screenWidth: document.body.clientWidth - 260, // 屏幕尺寸
       searchValue: '', // 搜索框中的值
       options: [{
         value: 'id',
         label: 'ID',
       },
-        {
-          value: 'name',
-          label: '名称',
-        }],
+      {
+        value: 'name',
+        label: '名称',
+      }],
       selectValue: '', // 下拉框中选择id还是name
       dialogFormVisible: false,
       dialogInhabitantVisible: false,
@@ -284,21 +286,58 @@ export default {
       allGenus: null,
       fileList: [],
       inhabitantImageList: [],
+      setPageSizeCount: 0,
+      isWindowResized: false,
     };
-  },
-  created() {
-    this.getData();
-    this.getAllGenus();
   },
   // 钩子函数
   mounted() {
+    this.setPageSize();
+    this.getData();
+    this.getAllGenus();
     const that = this;
+    setInterval(() => {
+      if (this.setPageSizeCount > 0) {
+        this.setPageSizeCount -= 1;
+      }
+    }, 3000);
+    setInterval(() => {
+      if (this.isWindowResized) {
+        this.isWindowResized = false;
+        window.screenWidth = document.body.clientWidth;
+        that.screenWidth = window.screenWidth - 250;
+        that.setPageSize();
+        that.getData();
+      }
+    }, 500);
     window.onresize = () => (() => {
-      window.screenWidth = document.body.clientWidth;
-      that.screenWidth = window.screenWidth - 250;
+      that.isWindowResized = true;
     })();
   },
   methods: {
+    setPageSize() {
+      if (this.setPageSizeCount <= 5) {
+        this.setPageSizeCount += 1;
+        const totalHeight = document.body.clientHeight * 0.75;
+        let i = 0;
+        let min = totalHeight;
+        let minNum = 0;
+        for (; i <= 9; i += 1) {
+          const tmp = totalHeight - i * 80;
+          if (tmp < min && tmp > 0) {
+            min = tmp;
+            minNum = i;
+          }
+        }
+        this.totalPage = minNum;
+      } else {
+        this.$message({
+          showClose: true,
+          message: '拖动窗口过于频繁',
+          type: 'warning',
+        });
+      }
+    },
     async getData(selectValue) {
       this.listLoading = true;
       let result;
@@ -393,7 +432,7 @@ export default {
       this.form.orderId = row.order_id;
       this.form.orderName = row.order_name;
       this.form.image = this.getImageFromBase64(row.image);
-      this.form.inhabitantImages = this.getInhabitantImageListFromBase64(row.image).map((v) => ({name: 'img', url: v}));
+      this.form.inhabitantImages = this.getInhabitantImageListFromBase64(row.image).map((v) => ({ name: 'img', url: v }));
       this.fileList = [{
         name: 'img',
         url: this.form.image,
@@ -512,7 +551,7 @@ export default {
       reader.readAsDataURL(file.raw);
       // eslint-disable-next-line func-names
       reader.onload = function () {
-        self.form.inhabitantImages.push({name: 'img', url: this.result});
+        self.form.inhabitantImages.push({ name: 'img', url: this.result });
       };
     },
     handleInhabitantRemove(file) {
@@ -567,10 +606,10 @@ export default {
 <style lang="scss" scoped>
 /*分页*/
 .page-bar {
-  width: 80%;
+  width: 80vw;
   position: fixed;
   margin: 0 auto 0 35%;
-  bottom: -10vh;
+  bottom: 10vh;
 }
 
 ul, li {
