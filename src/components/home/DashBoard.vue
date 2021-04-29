@@ -106,7 +106,7 @@
       <span>
         请选择已存在的模型文件：
       </span>
-      <el-select v-model="selectedModelPath" placeholder="请选择">
+      <el-select filterable v-model="selectedModelPath" placeholder="请选择">
         <el-option
           v-for="item in modelFileList"
           :key="item"
