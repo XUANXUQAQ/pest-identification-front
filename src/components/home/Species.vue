@@ -27,8 +27,8 @@
       <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
-      <el-table-column :show-overflow-tooltip="true" align="center" label="标本图片" :width="(screenWidth / 10) + 'px'">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;" :width="screenWidth + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="标本图片">
         <template slot-scope="{row}">
           <el-popover placement="right" title="" trigger="hover">
             <el-image :src="getImageFromBase64(row.image)"></el-image>
@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="生态图片" :width="(screenWidth / 10) + 'px'">
+      <el-table-column align="center" label="生态图片">
         <template slot-scope="{row}">
           <el-button @click="showInhabitantImageList(row.image)">
             查看所有图片
@@ -46,55 +46,55 @@
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="代码" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="代码">
         <template slot-scope="{row}">
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="名称" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="名称">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="拉丁学名" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="拉丁学名">
         <template slot-scope="{row}">
           <span>{{ row.latin }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="危害植物" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="危害植物">
         <template slot-scope="{row}">
           <span>{{ row.plant }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="分布区域" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="分布区域">
         <template slot-scope="{row}">
           <span>{{ row.area }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="属名称" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="属名称">
         <template slot-scope="{row}">
           <span>{{ row.genus_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="科名称" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="科名称">
         <template slot-scope="{row}">
           <span>{{ row.family_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="目名称" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="目名称">
         <template slot-scope="{row}">
           <span>{{ row.order_name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :show-overflow-tooltip="true" align="center" label="Actions" :width="(screenWidth / 10) + 'px'">
+      <el-table-column :show-overflow-tooltip="true" align="center" label="Actions">
         <template slot-scope="{row}">
           <el-button
             type="primary"

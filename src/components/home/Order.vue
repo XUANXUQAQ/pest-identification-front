@@ -27,26 +27,26 @@
       <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="ID" :width="(screenWidth / 4) + 'px'">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%" :width="screenWidth + 'px'">
+      <el-table-column align="center" label="ID">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="代码" :width="(screenWidth / 4) + 'px'">
+      <el-table-column align="center" label="代码">
         <template slot-scope="{row}">
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="名称" :width="(screenWidth / 4) + 'px'">
+      <el-table-column align="center" label="名称">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="Actions" :width="(screenWidth / 4) + 'px'">
+      <el-table-column align="center" label="Actions">
         <template slot-scope="{row}">
           <el-button
             type="primary"

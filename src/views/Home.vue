@@ -43,17 +43,17 @@
             <span slot="title">种管理</span>
           </el-menu-item>
         </el-menu>
-        <div style="position: fixed; bottom: 15vh; left: 1.8vw;">
-          <div class="user">
-            <el-tag type="primary" class="user">用户：{{ username }}</el-tag>
-          </div>
-          <div style="height: 10px"></div>
-          <el-button
-            type="danger"
-            @click="logout"
-            style="position:fixed; bottom: 10vh; left: 1.8vw; width: 125px">
-            登出
-          </el-button>
+        <div style="position: absolute;top: 80%;left: 3%; width: 4%">
+            <el-tag type="primary" class="user">
+              用户：{{ username }}
+            </el-tag>
+            <div style="margin: 10px"></div>
+            <el-button
+              type="danger"
+              style="position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);"
+              @click="logout">
+              登出
+            </el-button>
         </div>
       </el-aside>
       <el-main>
@@ -132,6 +132,5 @@ export default {
   font-size: 18px;
   font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);
-  width: 125px;
 }
 </style>
