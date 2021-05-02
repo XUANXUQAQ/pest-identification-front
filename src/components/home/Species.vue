@@ -1,101 +1,104 @@
 <template>
   <div>
     <div style="margin: 10px">
-      <el-button
-        type="success"
-        icon="el-icon-circle-check-outline"
-        @click="showAddForm"
-      >
+      <el-button type="success" icon="el-icon-circle-check-outline" @click="showAddForm">
         添加
       </el-button>
       <span style="position: fixed; left: 50%">
-        <span style="font-size: 20px">
-        根据
-      </span>
-      <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      <span style="font-size: 20px">
-        搜索种
-      </span>
-      <el-input v-model="searchValue" placeholder="请输入名称" style="width: 30%"></el-input>
-      <el-button round @click="getData(selectValue)">搜索</el-button>
+        <span style="font-size: 20px"> 根据 </span>
+        <el-select v-model="selectValue" placeholder="请选择" style="width: 130px">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <span style="font-size: 20px"> 搜索种 </span>
+        <el-input v-model="searchValue" placeholder="请输入名称" style="width: 30%"></el-input>
+        <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;" :width="screenWidth + 'px'">
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%"
+      :width="screenWidth + 'px'"
+    >
       <el-table-column :show-overflow-tooltip="true" align="center" label="标本图片">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-popover placement="right" title="" trigger="hover">
             <el-image :src="getImageFromBase64(row.image)"></el-image>
-            <el-image slot="reference" :src="getImageFromBase64(row.image)" :alt="getImageFromBase64(row.image)"
-                      style="max-height: 50px;max-width: 50px"></el-image>
+            <el-image
+              slot="reference"
+              :src="getImageFromBase64(row.image)"
+              :alt="getImageFromBase64(row.image)"
+              style="max-height: 50px; max-width: 50px"
+            ></el-image>
           </el-popover>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="生态图片">
-        <template slot-scope="{row}">
-          <el-button @click="showInhabitantImageList(row.image)">
-            查看所有图片
-          </el-button>
+        <template slot-scope="{ row }">
+          <el-button @click="showInhabitantImageList(row.image)"> 查看所有图片 </el-button>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="代码">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="名称">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="拉丁学名">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.latin }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="危害植物">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.plant }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="分布区域">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.area }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="属名称">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.genus_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="科名称">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.family_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="目名称">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.order_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :show-overflow-tooltip="true" align="center" label="Actions">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-button
             type="primary"
             size="small"
@@ -126,14 +129,20 @@
         layout="prev, pager, next"
         :prev-click="pageDown"
         :next-click="pageUp"
-        @current-change="btnClick">
+        @current-change="btnClick"
+      >
       </el-pagination>
     </div>
 
     <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="id" :label-width="formLabelWidth">
-          <el-input v-model="form.id" autocomplete="off" class="form-input" :disabled="true"></el-input>
+          <el-input
+            v-model="form.id"
+            autocomplete="off"
+            class="form-input"
+            :disabled="true"
+          ></el-input>
         </el-form-item>
         <el-form-item label="代码" :label-width="formLabelWidth">
           <el-input v-model="form.code" autocomplete="off" class="form-input"></el-input>
@@ -152,19 +161,25 @@
         </el-form-item>
         <el-form-item label="属名称" :label-width="formLabelWidth">
           <el-select filterable v-model="form.genusId" placeholder="请选择属名称">
-            <el-option
-              v-for="item in allGenus"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+            <el-option v-for="item in allGenus" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="科名称" :label-width="formLabelWidth">
-          <el-input v-model="form.familyName" autocomplete="off" :disabled="true" class="form-input"></el-input>
+          <el-input
+            v-model="form.familyName"
+            autocomplete="off"
+            :disabled="true"
+            class="form-input"
+          ></el-input>
         </el-form-item>
         <el-form-item label="目名称" :label-width="formLabelWidth">
-          <el-input v-model="form.orderName" autocomplete="off" :disabled="true" class="form-input"></el-input>
+          <el-input
+            v-model="form.orderName"
+            autocomplete="off"
+            :disabled="true"
+            class="form-input"
+          ></el-input>
         </el-form-item>
         <el-form-item label="标本图片" :label-width="formLabelWidth" class="form-input">
           <el-upload
@@ -209,25 +224,25 @@
       </template>
     </el-dialog>
 
-    <el-dialog
-      title="提示"
-      :visible="dialogDeleteVisible"
-      width="30%">
+    <el-dialog title="提示" :visible="dialogDeleteVisible" width="30%">
       <span>是否删除</span>
       <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogDeleteVisible = false">取消</el-button>
-      <el-button type="danger" @click="confirmDelete">确定</el-button>
-    </span>
+        <span class="dialog-footer">
+          <el-button @click="dialogDeleteVisible = false">取消</el-button>
+          <el-button type="danger" @click="confirmDelete">确定</el-button>
+        </span>
       </template>
     </el-dialog>
 
-    <el-dialog
-      title="生态图片"
-      :visible="dialogInhabitantVisible"
-      width="30%">
+    <el-dialog title="生态图片" :visible="dialogInhabitantVisible" width="30%">
       <span></span>
-      <el-image :src="item.image" v-for="item in inhabitantImageList" height="90%" list-type="picture"></el-image>
+      <el-image
+        :src="item.image"
+        v-bind:key='item.name'
+        v-for="item in inhabitantImageList"
+        height="90%"
+        list-type="picture"
+      ></el-image>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogInhabitantVisible = false">确定</el-button>
@@ -249,14 +264,16 @@ export default {
       totalPage: 9, // 当前条数
       screenWidth: document.body.clientWidth - 260, // 屏幕尺寸
       searchValue: '', // 搜索框中的值
-      options: [{
-        value: 'id',
-        label: 'ID',
-      },
-      {
-        value: 'name',
-        label: '名称',
-      }],
+      options: [
+        {
+          value: 'id',
+          label: 'ID',
+        },
+        {
+          value: 'name',
+          label: '名称',
+        },
+      ],
       selectValue: '', // 下拉框中选择id还是name
       dialogFormVisible: false,
       dialogInhabitantVisible: false,
@@ -274,10 +291,12 @@ export default {
         orderName: '',
         orderId: '',
         image: '',
-        inhabitantImages: [{
-          name: '',
-          url: '',
-        }],
+        inhabitantImages: [
+          {
+            name: '',
+            url: '',
+          },
+        ],
       },
       isUpdate: false,
       formLabelWidth: '120px',
@@ -310,9 +329,10 @@ export default {
         that.getData();
       }
     }, 500);
-    window.onresize = () => (() => {
-      that.isWindowResized = true;
-    })();
+    window.onresize = () =>
+      (() => {
+        that.isWindowResized = true;
+      })();
   },
   methods: {
     setPageSize() {
@@ -345,7 +365,11 @@ export default {
         if (selectValue === 'id') {
           result = await this.$speciesApi.getSpeciesById(this.searchValue);
         } else if (selectValue === 'name') {
-          result = await this.$speciesApi.getSpeciesByName(this.cur, this.totalPage, this.searchValue);
+          result = await this.$speciesApi.getSpeciesByName(
+            this.cur,
+            this.totalPage,
+            this.searchValue,
+          );
         } else {
           result = await this.$speciesApi.getAllSpecies(this.cur, this.totalPage);
         }
@@ -391,7 +415,10 @@ export default {
     },
     getInhabitantImageListFromBase64(base64) {
       if (base64) {
-        return base64.split('|')[1].split('&').filter((obj) => (!(typeof obj === 'undefined' || obj === null || obj === '')));
+        return base64
+          .split('|')[1]
+          .split('&')
+          .filter((obj) => !(typeof obj === 'undefined' || obj === null || obj === ''));
       }
       return [];
     },
@@ -432,11 +459,16 @@ export default {
       this.form.orderId = row.order_id;
       this.form.orderName = row.order_name;
       this.form.image = this.getImageFromBase64(row.image);
-      this.form.inhabitantImages = this.getInhabitantImageListFromBase64(row.image).map((v) => ({ name: 'img', url: v }));
-      this.fileList = [{
+      this.form.inhabitantImages = this.getInhabitantImageListFromBase64(row.image).map((v) => ({
         name: 'img',
-        url: this.form.image,
-      }];
+        url: v,
+      }));
+      this.fileList = [
+        {
+          name: 'img',
+          url: this.form.image,
+        },
+      ];
     },
     showDeleteForm(row) {
       this.dialogDeleteVisible = true;
@@ -444,37 +476,13 @@ export default {
     },
     confirmDelete() {
       this.dialogDeleteVisible = false;
-      return this.$speciesApi.deleteSpecies(
-        this.form.id,
-      ).then(() => {
-        this.getData();
-      }).catch((res) => {
-        if (res.code === 50000) {
-          this.$message({
-            showClose: true,
-            message: '服务器错误',
-            type: 'warning',
-          });
-        }
-      });
-    },
-    confirmEdit() {
-      this.dialogFormVisible = false;
-      if (this.isUpdate) {
-        // 更新
-        return this.$speciesApi.updateSpecies(
-          this.form.area, this.form.code, this.form.genusId, this.form.id,
-          this.getImageData(this.form.image, this.form.inhabitantImages), this.form.latin, this.form.name, this.form.plant,
-        ).then(() => {
+      return this.$speciesApi
+        .deleteSpecies(this.form.id)
+        .then(() => {
           this.getData();
-        }).catch((res) => {
-          if (res.code === 40000) {
-            this.$message({
-              showClose: true,
-              message: '该种仍然在被使用',
-              type: 'error',
-            });
-          } else if (res.code === 50000) {
+        })
+        .catch((res) => {
+          if (res.code === 50000) {
             this.$message({
               showClose: true,
               message: '服务器错误',
@@ -482,28 +490,71 @@ export default {
             });
           }
         });
+    },
+    confirmEdit() {
+      this.dialogFormVisible = false;
+      if (this.isUpdate) {
+        // 更新
+        return this.$speciesApi
+          .updateSpecies(
+            this.form.area,
+            this.form.code,
+            this.form.genusId,
+            this.form.id,
+            this.getImageData(this.form.image, this.form.inhabitantImages),
+            this.form.latin,
+            this.form.name,
+            this.form.plant,
+          )
+          .then(() => {
+            this.getData();
+          })
+          .catch((res) => {
+            if (res.code === 40000) {
+              this.$message({
+                showClose: true,
+                message: '该种仍然在被使用',
+                type: 'error',
+              });
+            } else if (res.code === 50000) {
+              this.$message({
+                showClose: true,
+                message: '服务器错误',
+                type: 'warning',
+              });
+            }
+          });
       }
       // 添加
-      return this.$speciesApi.insertSpecies(
-        this.form.area, this.form.code, this.form.genusId, 0,
-        this.getImageData(this.form.image, this.form.inhabitantImages), this.form.latin, this.form.name, this.form.plant,
-      ).then(() => {
-        this.getData();
-      }).catch((res) => {
-        if (res.code === 50000) {
-          this.$message({
-            showClose: true,
-            message: '服务器错误',
-            type: 'warning',
-          });
-        } else if (res.code === 40001) {
-          this.$message({
-            showClose: true,
-            message: '无效的id',
-            type: 'error',
-          });
-        }
-      });
+      return this.$speciesApi
+        .insertSpecies(
+          this.form.area,
+          this.form.code,
+          this.form.genusId,
+          0,
+          this.getImageData(this.form.image, this.form.inhabitantImages),
+          this.form.latin,
+          this.form.name,
+          this.form.plant,
+        )
+        .then(() => {
+          this.getData();
+        })
+        .catch((res) => {
+          if (res.code === 50000) {
+            this.$message({
+              showClose: true,
+              message: '服务器错误',
+              type: 'warning',
+            });
+          } else if (res.code === 40001) {
+            this.$message({
+              showClose: true,
+              message: '无效的id',
+              type: 'error',
+            });
+          }
+        });
     },
     getImageData(image, inhabitantImageList) {
       const tmp = [];
@@ -517,7 +568,8 @@ export default {
       const resp = await this.$genusApi.selectAllGenus(1, 100);
       this.allGenus = resp.data;
     },
-    btnClick(data) { // 页码点击事件
+    btnClick(data) {
+      // 页码点击事件
       if (data !== this.cur) {
         this.cur = data;
       }
@@ -612,17 +664,18 @@ export default {
   bottom: 10vh;
 }
 
-ul, li {
+ul,
+li {
   margin: 0;
   padding: 0;
 }
 
 li {
-  list-style: none
+  list-style: none;
 }
 
 .page-bar li:first-child > a {
-  margin-left: 0
+  margin-left: 0;
 }
 
 .page-bar a {
@@ -633,7 +686,7 @@ li {
   padding: 6px 12px;
   margin-left: -1px;
   line-height: 1.42857143;
-  color: #5D6062;
+  color: #5d6062;
   cursor: pointer;
   margin-right: 20px;
 }
@@ -649,8 +702,8 @@ li {
 .page-bar .active a {
   color: #fff;
   cursor: default;
-  background-color: #E96463;
-  border-color: #E96463;
+  background-color: #e96463;
+  border-color: #e96463;
 }
 
 .page-bar i {

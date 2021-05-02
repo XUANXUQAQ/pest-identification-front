@@ -1,59 +1,60 @@
 <template>
   <div>
     <div style="margin: 10px">
-      <el-button
-        type="success"
-        icon="el-icon-circle-check-outline"
-        @click="showAddForm"
-      >
+      <el-button type="success" icon="el-icon-circle-check-outline" @click="showAddForm">
         添加
       </el-button>
       <span style="position: fixed; left: 50%">
-        <span style="font-size: 20px;">
-      根据
-      </span>
+        <span style="font-size: 20px"> 根据 </span>
         <el-select filterable v-model="selectValue" placeholder="请选择" style="width: 10vw">
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.value"
+          >
           </el-option>
         </el-select>
-        <span style="font-size: 20px">
-      搜索科
-    </span>
+        <span style="font-size: 20px"> 搜索科 </span>
         <el-input v-model="searchValue" placeholder="请输入名称" style="width: 10vw"></el-input>
         <el-button round @click="getData(selectValue)">搜索</el-button>
       </span>
     </div>
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%" :width="screenWidth + 'px'">
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%"
+      :width="screenWidth + 'px'"
+    >
       <el-table-column align="center" label="ID">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="代码">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.code }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="名称">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="目">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <span>{{ row.order_name }}</span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" label="Actions">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <el-button
             type="primary"
             size="small"
@@ -77,7 +78,12 @@
     <el-dialog v-bind:title="dialogTitle" :visible="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="id" :label-width="formLabelWidth">
-          <el-input v-model="form.id" autocomplete="off" class="form-input" :disabled="true"></el-input>
+          <el-input
+            v-model="form.id"
+            autocomplete="off"
+            class="form-input"
+            :disabled="true"
+          ></el-input>
         </el-form-item>
         <el-form-item label="代码" :label-width="formLabelWidth">
           <el-input v-model="form.code" autocomplete="off" class="form-input"></el-input>
@@ -87,11 +93,7 @@
         </el-form-item>
         <el-form-item label="目" :label-width="formLabelWidth">
           <el-select filterable v-model="form.orderId" placeholder="请选择目名称">
-            <el-option
-              v-for="item in allOrders"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id">
+            <el-option v-for="item in allOrders" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -104,16 +106,13 @@
       </template>
     </el-dialog>
 
-    <el-dialog
-      title="提示"
-      :visible="dialogDeleteVisible"
-      width="30%">
+    <el-dialog title="提示" :visible="dialogDeleteVisible" width="30%">
       <span>是否删除</span>
       <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogDeleteVisible = false">取消</el-button>
-      <el-button type="danger" @click="confirmDelete">确定</el-button>
-    </span>
+        <span class="dialog-footer">
+          <el-button @click="dialogDeleteVisible = false">取消</el-button>
+          <el-button type="danger" @click="confirmDelete">确定</el-button>
+        </span>
       </template>
     </el-dialog>
     <div class="page-bar">
@@ -124,7 +123,8 @@
         layout="prev, pager, next"
         :prev-click="pageDown"
         :next-click="pageUp"
-        @current-change="btnClick">
+        @current-change="btnClick"
+      >
       </el-pagination>
     </div>
   </div>
@@ -142,14 +142,16 @@ export default {
       totalPage: 10, // 当前条数
       screenWidth: document.body.clientWidth - 260, // 屏幕尺寸
       searchValue: '',
-      options: [{
-        value: 'id',
-        label: 'ID',
-      },
-      {
-        value: 'name',
-        label: '名称',
-      }],
+      options: [
+        {
+          value: 'id',
+          label: 'ID',
+        },
+        {
+          value: 'name',
+          label: '名称',
+        },
+      ],
       selectValue: '',
       dialogFormVisible: false,
       form: {
@@ -188,9 +190,10 @@ export default {
         that.getData();
       }
     }, 500);
-    window.onresize = () => (() => {
-      that.isWindowResized = true;
-    })();
+    window.onresize = () =>
+      (() => {
+        that.isWindowResized = true;
+      })();
   },
   methods: {
     setPageSize() {
@@ -227,7 +230,11 @@ export default {
         if (selectValue === 'id') {
           result = await this.$familyApi.selectFamilyById(this.searchValue);
         } else if (selectValue === 'name') {
-          result = await this.$familyApi.selectFamiliesByName(this.cur, this.totalPage, this.searchValue);
+          result = await this.$familyApi.selectFamiliesByName(
+            this.cur,
+            this.totalPage,
+            this.searchValue,
+          );
         } else {
           result = await this.$familyApi.selectAllFamilies(this.cur, this.totalPage);
         }
@@ -268,35 +275,12 @@ export default {
     },
     confirmDelete() {
       this.dialogDeleteVisible = false;
-      return this.$familyApi.deleteFamily(
-        this.form.id,
-      ).then(() => {
-        this.getData();
-      }).catch((res) => {
-        if (res.code === 40000) {
-          this.$message({
-            showClose: true,
-            message: '该科仍然在被使用',
-            type: 'error',
-          });
-        } else if (res.code === 50000) {
-          this.$message({
-            showClose: true,
-            message: '服务器错误',
-            type: 'warning',
-          });
-        }
-      });
-    },
-    confirmEdit() {
-      this.dialogFormVisible = false;
-      if (this.isUpdate) {
-        // 更新
-        return this.$familyApi.updateFamily(
-          this.form.id, this.form.code, this.form.name, this.form.orderId,
-        ).then(() => {
+      return this.$familyApi
+        .deleteFamily(this.form.id)
+        .then(() => {
           this.getData();
-        }).catch((res) => {
+        })
+        .catch((res) => {
           if (res.code === 40000) {
             this.$message({
               showClose: true,
@@ -311,29 +295,56 @@ export default {
             });
           }
         });
+    },
+    confirmEdit() {
+      this.dialogFormVisible = false;
+      if (this.isUpdate) {
+        // 更新
+        return this.$familyApi
+          .updateFamily(this.form.id, this.form.code, this.form.name, this.form.orderId)
+          .then(() => {
+            this.getData();
+          })
+          .catch((res) => {
+            if (res.code === 40000) {
+              this.$message({
+                showClose: true,
+                message: '该科仍然在被使用',
+                type: 'error',
+              });
+            } else if (res.code === 50000) {
+              this.$message({
+                showClose: true,
+                message: '服务器错误',
+                type: 'warning',
+              });
+            }
+          });
       }
       // 添加
-      return this.$familyApi.insertFamily(
-        0, this.form.code, this.form.name, this.form.orderId,
-      ).then(() => {
-        this.getData();
-      }).catch((res) => {
-        if (res.code === 50000) {
-          this.$message({
-            showClose: true,
-            message: '服务器错误',
-            type: 'warning',
-          });
-        } else if (res.code === 40001) {
-          this.$message({
-            showClose: true,
-            message: '无效的id',
-            type: 'error',
-          });
-        }
-      });
+      return this.$familyApi
+        .insertFamily(0, this.form.code, this.form.name, this.form.orderId)
+        .then(() => {
+          this.getData();
+        })
+        .catch((res) => {
+          if (res.code === 50000) {
+            this.$message({
+              showClose: true,
+              message: '服务器错误',
+              type: 'warning',
+            });
+          } else if (res.code === 40001) {
+            this.$message({
+              showClose: true,
+              message: '无效的id',
+              type: 'error',
+            });
+          }
+        });
     },
-    btnClick(data) { // 页码点击事件
+    btnClick(data) {
+      // 页码点击事件
       if (data !== this.cur) {
         this.cur = data;
       }
@@ -390,17 +401,18 @@ export default {
   bottom: 10vh;
 }
 
-ul, li {
+ul,
+li {
   margin: 0;
   padding: 0;
 }
 
 li {
-  list-style: none
+  list-style: none;
 }
 
 .page-bar li:first-child > a {
-  margin-left: 0
+  margin-left: 0;
 }
 
 .page-bar a {
@@ -411,7 +423,7 @@ li {
   padding: 6px 12px;
   margin-left: -1px;
   line-height: 1.42857143;
-  color: #5D6062;
+  color: #5d6062;
   cursor: pointer;
   margin-right: 20px;
 }
@@ -427,8 +439,8 @@ li {
 .page-bar .active a {
   color: #fff;
   cursor: default;
-  background-color: #E96463;
-  border-color: #E96463;
+  background-color: #e96463;
+  border-color: #e96463;
 }
 
 .page-bar i {

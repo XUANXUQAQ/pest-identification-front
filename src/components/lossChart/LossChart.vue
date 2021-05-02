@@ -16,13 +16,15 @@ const option = {
   yAxis: {
     type: 'value',
   },
-  series: [{
-    name: '模拟数据',
-    type: 'line',
-    showSymbol: true,
-    hoverAnimation: true,
-    data,
-  }],
+  series: [
+    {
+      name: '模拟数据',
+      type: 'line',
+      showSymbol: true,
+      hoverAnimation: true,
+      data,
+    },
+  ],
 };
 
 export default {
@@ -56,23 +58,27 @@ export default {
       // eslint-disable-next-line no-plusplus
       data.push([this.count++, this.properties.lossData]);
       this.myChart.setOption({
-        series: [{
-          name: '模拟数据',
-          type: 'line',
-          showSymbol: false,
-          hoverAnimation: false,
-          data,
-        }],
+        series: [
+          {
+            name: '模拟数据',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            data,
+          },
+        ],
       });
       this.myChart.setOption({
-        xAxis: [{
-          type: 'value',
-          splitLine: {
-            show: false,
+        xAxis: [
+          {
+            type: 'value',
+            splitLine: {
+              show: false,
+            },
+            min: data[0][0],
+            max: data[data.length - 1][0] + 3,
           },
-          min: data[0][0],
-          max: data[data.length - 1][0] + 3,
-        }],
+        ],
       });
     },
   },
