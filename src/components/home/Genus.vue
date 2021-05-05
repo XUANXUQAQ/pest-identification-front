@@ -393,10 +393,9 @@ export default {
         that.getData();
       }
     }, 500);
-    window.onresize = () =>
-      (() => {
-        that.isWindowResized = true;
-      })();
+    window.onresize = () => (() => {
+      that.isWindowResized = true;
+    })();
   },
   computed: {
     // 分页
