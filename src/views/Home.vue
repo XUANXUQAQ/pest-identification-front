@@ -50,7 +50,7 @@
             <div style="margin: 10px"></div>
             <el-button
               type="danger"
-              style="position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);"
+              style="position:relative;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%);width: 160%"
               @click="logout">
               登出
             </el-button>
