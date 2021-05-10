@@ -183,7 +183,7 @@
         </el-form-item>
         <el-form-item label="标本图片" :label-width="formLabelWidth" class="form-input">
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="fakeImgPostUrl"
             :on-change="handleChange"
             :before-remove="beforeRemove"
             multiple
@@ -199,7 +199,7 @@
         </el-form-item>
         <el-form-item label="生态图片" :label-width="formLabelWidth" class="form-input">
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :action="fakeImgPostUrl"
             list-type="picture"
             :on-change="handleInhabitantChange"
             :before-remove="beforeRemove"
@@ -253,6 +253,8 @@
 </template>
 
 <script>
+import baseURLs from '@/network/baseURLs';
+
 export default {
   name: 'Species',
   data() {
@@ -307,10 +309,12 @@ export default {
       inhabitantImageList: [],
       setPageSizeCount: 0,
       isWindowResized: false,
+      fakeImgPostUrl: '',
     };
   },
   // 钩子函数
   mounted() {
+    this.fakeImgPostUrl = `${baseURLs.databaseURL}/imgFake`;
     this.setPageSize();
     this.getData();
     this.getAllGenus();
