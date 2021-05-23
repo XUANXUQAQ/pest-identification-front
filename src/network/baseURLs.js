@@ -1,6 +1,6 @@
 const baseURLs = {
   databaseURL: 'http://rjgc.club:8099',
-  yoloURL: 'http://localhost:8899',
+  yoloURL: 'http://183.195.216.150:8899',
 };
 
 export default baseURLs;
