@@ -491,6 +491,12 @@ export default {
               message: '服务器错误',
               type: 'warning',
             });
+          } else if (res.code === 40005) {
+            this.$message({
+              showClose: true,
+              message: '其他用户正在操作',
+              type: 'warning',
+            });
           }
         });
     },
@@ -523,6 +529,12 @@ export default {
               this.$message({
                 showClose: true,
                 message: '服务器错误',
+                type: 'warning',
+              });
+            } else if (res.code === 40005) {
+              this.$message({
+                showClose: true,
+                message: '其他用户正在操作',
                 type: 'warning',
               });
             }
