@@ -1,6 +1,6 @@
 const baseURLs = {
-  databaseURL: 'http://183.195.216.150:8898',
-  yoloURL: 'http://183.195.216.150:8899',
+  databaseURL: 'http://120.79.146.15:8081',
+  yoloURL: 'http://120.79.146.15:8082',
 };
 
 export default baseURLs;
