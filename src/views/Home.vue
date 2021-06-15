@@ -105,7 +105,7 @@ export default {
 <style lang="scss" scoped>
 
 .el-body {
-  height: 90vh;
+  height: 100vh;
 }
 
 .title {
