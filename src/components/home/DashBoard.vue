@@ -128,7 +128,7 @@
           </el-tag>
           <el-input style="width: 10%" v-model="trainTestRate"></el-input>
           <el-tag style="font-size: 14px; margin-left: 50px; margin-right: 20px">
-            模型精度：{{ mAP }}
+            mAP：{{ mAP }}
           </el-tag>
           <el-tag style="font-size: 14px"> 当前训练轮数：{{ iterationCount }} </el-tag>
         </div>
@@ -136,7 +136,7 @@
           <el-button type="primary" @click="updateTrainPercent">修改训练测试比例</el-button>
           <el-button type="success" @click="startTrain">开始训练</el-button>
           <el-button type="danger" @click="stopTrain(true)">停止训练</el-button>
-          <el-button type="primary" @click="testAccuracy">测试精度</el-button>
+          <el-button type="primary" @click="testAccuracy">测试mAP</el-button>
         </div>
       </div>
     </el-card>
